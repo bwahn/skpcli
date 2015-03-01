@@ -17,14 +17,10 @@ func main() {
 	if err := run(); err != nil {
 		fmt.Fprintf(os.Stderr, "error in run: %v\n", err)
 		if _, ok := err.(unknownCommandError); ok {
-			usageHelp()
+			usageShort()
 		}
 		os.Exit(1)
 	}
-}
-
-func usageHelp() {
-	fmt.Fprintf(os.Stderr, "Usage: %s {list|connect|help}\n", os.Args[0])
 }
 
 func run() error {
@@ -32,11 +28,18 @@ func run() error {
 	if err != nil {
 		return fmt.Errorf("config error: %v\n", err)
 	}
-	switch cmd := flags.Arg(0); cmd {
+	cmd := flags.Arg(0)
+	fmt.Fprintf(os.Stderr, "cmd : %v\n", cmd)
+	switch cmd {
 	case "list":
 		return cmdList()
 	case "help":
+		fmt.Fprintf(os.Stderr, "aaa\n")
 		flags.Usage()
+		return nil
+	case "":
+		fmt.Fprintf(os.Stderr, "bbb\n")
+		usageShort()
 		return nil
 	default:
 		return unknownCommandError{cmd: cmd}
